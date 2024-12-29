@@ -6,17 +6,19 @@ Copyright (c) 2008-2024 synodriver <diguohuangjiajinweijun@gmail.com>
 from dataclasses import dataclass
 from enum import IntEnum
 from io import BytesIO
+
 import crcmod
 
 crc16 = crcmod.mkCrcFun(0x13D65, 0xFFFF, True, 0xFFFF)
+
 
 @dataclass
 class Event:
     sop: bytes  # b"CG"  2 bytes
     cmd: int  # 1 bytes
-    length: int # 2 bytes
-    payload: bytes # len(payload) == length
-    checksum: int # 2 bytes
+    length: int  # 2 bytes
+    payload: bytes  # len(payload) == length
+    checksum: int  # 2 bytes
 
     @property
     def keys(self):
@@ -49,19 +51,20 @@ class Event:
         writer.write(self.length.to_bytes(2, "little"))
         writer.write(self.payload)
         # self.checksum = crc16(writer.getvalue())
-        writer.write(self.checksum.to_bytes(2, "little")) # todo 自己计算checksum
+        writer.write(self.checksum.to_bytes(2, "little"))  # todo 自己计算checksum
         return writer.getvalue()
 
 
 def parse_history_data(data: bytes):
     time = int.from_bytes(data[:4], "little")  # 时间戳
-    internal = int.from_bytes(data[4:6], "little") # 存储间隔 单位s
+    internal = int.from_bytes(data[4:6], "little")  # 存储间隔 单位s
     current_ptr = 6
     history = []
     while current_ptr != len(data):
-        history.append(data[current_ptr:current_ptr+6])
+        history.append(data[current_ptr : current_ptr + 6])
         current_ptr += 6
     return time, internal, history
+
 
 def build_history_data(time: int, internal: int, history: list) -> bytes:
     writer = BytesIO()
@@ -79,7 +82,7 @@ class _State(IntEnum):
 
 class Connection:
     def __init__(self):
-        self._buf = bytearray() # type: bytearray
+        self._buf = bytearray()  # type: bytearray
         self._state = _State.read_first_5_bytes
         self._tmp = None
 
@@ -98,9 +101,11 @@ class Connection:
             elif self._state == _State.read_payload:
                 if len(self._buf) < self._tmp.length + 2:
                     break
-                payload = self._buf[:self._tmp.length]
-                checksum = int.from_bytes(self._buf[self._tmp.length: self._tmp.length+2], "little")
-                del self._buf[:self._tmp.length + 2]
+                payload = self._buf[: self._tmp.length]
+                checksum = int.from_bytes(
+                    self._buf[self._tmp.length : self._tmp.length + 2], "little"
+                )
+                del self._buf[: self._tmp.length + 2]
                 self._state = _State.read_first_5_bytes
                 self._tmp.payload = payload
                 self._tmp.checksum = checksum

@@ -1,2 +1,8 @@
 # -*- coding: utf-8 -*-
-from qingping.connection import Connection, Event, parse_history_data, build_history_data
+from qingping.client import Client
+from qingping.connection import (
+    Connection,
+    Event,
+    build_history_data,
+    parse_history_data,
+)
