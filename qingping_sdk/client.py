@@ -10,7 +10,7 @@ from typing import List
 
 import aiohttp
 
-from qingping.exceptions import (
+from qingping_sdk.exceptions import (
     AuthException,
     ConflictException,
     ExpiredException,
@@ -18,7 +18,7 @@ from qingping.exceptions import (
     RequestException,
     ServerException,
 )
-from qingping.typing import (
+from qingping_sdk.typing import (
     AlertConfig,
     Device,
     DeviceInfoResponse,
@@ -29,7 +29,7 @@ from qingping.typing import (
     HistoryDataResponse,
     HistoryEventResponse,
 )
-from qingping.utils import create_auth
+from qingping_sdk.utils import create_auth
 
 JSON_ENCODING = "utf-8"
 DEFAULT_JSON_DECODER = json.loads
@@ -46,6 +46,7 @@ class Client:
         endpoint: str = None,
         api_endpoint: str = None,
         client_session=None,
+        close_on_exit: bool = True,
         loop: asyncio.AbstractEventLoop = None,
         **kw,
     ):
@@ -65,6 +66,7 @@ class Client:
         self.client_session = client_session or aiohttp.ClientSession(
             json_serialize=self.dumps
         )  # aiohttp的会话
+        self._close_on_exit = close_on_exit
 
         self._task = None
         self._ready = self._loop.create_future()
@@ -83,7 +85,12 @@ class Client:
                 "scope": "device_full_access",
             },
         ) as resp:
+            if resp.status != 200:
+                raise AuthException(await resp.text())
             return await resp.json(loads=self.loads)
+
+    async def aclose(self):
+        await self.client_session.close()
 
     async def __aenter__(self):
         self._task = self._loop.create_task(self._refresh_token())
@@ -96,13 +103,15 @@ class Client:
             await self._task
         except asyncio.CancelledError:
             pass
+        if self._close_on_exit:
+            await self.aclose()
         return False
 
     async def _refresh_token(self):
         while True:
             access_token_data = await self._get_access_token()
             self.access_token = access_token_data["access_token"]
-            if not self._ready.done():
+            if not self._ready.done() and not self._ready.cancelled():
                 self._ready.set_result(None)
             await asyncio.sleep(access_token_data["expires_in"])
         # def cb():

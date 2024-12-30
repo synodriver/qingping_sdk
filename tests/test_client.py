@@ -5,7 +5,7 @@ from unittest import IsolatedAsyncioTestCase
 
 import dotenv
 
-from qingping import Client
+from qingping_sdk import Client
 
 dotenv.load_dotenv("./.env")
 
@@ -51,7 +51,6 @@ class TestClient(IsolatedAsyncioTestCase):
     #   "threshold": 15
     # })
     #         alert = await client.get_alert(mac)
-            print(alert)
             # print(await client.change_alert(mac, {
             #     "id": alert["alert_configs"][0]["id"],
             #     "metric_name": "temperature",

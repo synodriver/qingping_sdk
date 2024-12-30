@@ -4,6 +4,7 @@ Copyright (c) 2008-2024 synodriver <diguohuangjiajinweijun@gmail.com>
 """
 # https://qingping.feishu.cn/docs/doccnsQEUKIl4ySLumxSqYktH4d
 from dataclasses import dataclass
+from typing import Generator
 from enum import IntEnum
 from io import BytesIO
 
@@ -21,7 +22,7 @@ class Event:
     checksum: int  # 2 bytes
 
     @property
-    def keys(self):
+    def keys(self) -> dict:
         """解析payload字段"""
         ret = {}
         reader = BytesIO(self.payload)
@@ -35,7 +36,7 @@ class Event:
         return ret
 
     @keys.setter
-    def keys(self, value) -> dict:
+    def keys(self, value) -> None:
         writer = BytesIO()
         for key, v in value.items():
             writer.write(key.to_bytes(1, "little"))
@@ -86,7 +87,7 @@ class Connection:
         self._state = _State.read_first_5_bytes
         self._tmp = None
 
-    def feed_data(self, data: bytes):
+    def feed_data(self, data: bytes) -> Generator[Event, None, None]:
         self._buf.extend(data)
         while True:
             if self._state == _State.read_first_5_bytes:
@@ -112,3 +113,6 @@ class Connection:
                 ev = self._tmp
                 self._tmp = None
                 yield ev
+
+    def send(self, event: Event) -> bytes:
+        return event.to_bytes()
