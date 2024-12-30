@@ -1,8 +1,5 @@
 <h1 align="center"><i>✨ qingping_sdk ✨ </i></h1>
 
-<h3 align="center">The python binding for <a href="https://github.com/skywind3000/kcp">kcp</a> </h3>
-
-
 
 [![pypi](https://img.shields.io/pypi/v/qingping_sdk.svg)](https://pypi.org/project/qingping_sdk/)
 ![python](https://img.shields.io/pypi/pyversions/qingping_sdk)
