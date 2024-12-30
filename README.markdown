@@ -6,8 +6,7 @@
 ![implementation](https://img.shields.io/pypi/implementation/qingping_sdk)
 ![wheel](https://img.shields.io/pypi/wheel/qingping_sdk)
 ![license](https://img.shields.io/github/license/synodriver/qingping_sdk.svg)
-![action](https://img.shields.io/github/workflow/status/synodriver/qingping_sdk/build%20wheel)
-
+![action](https://img.shields.io/github/actions/workflow/status/synodriver/qingping_sdk/upload.yaml?branch=main)
 
 # Usage 
 ```python
