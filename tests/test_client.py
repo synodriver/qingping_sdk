@@ -32,9 +32,7 @@ class TestClient(IsolatedAsyncioTestCase):
                     mac, int(time.time()) - 3600, int(time.time())
                 )
             )
-            d = await client.change_settings(
-                [mac], 60, 60
-            )
+            d = await client.change_settings([mac], 60, 60)
             self.assertEqual(d, "")
 
             # print(await client.add_alert(mac, {
@@ -44,13 +42,13 @@ class TestClient(IsolatedAsyncioTestCase):
             # }))
             alert = await client.get_alert(mac)
             print(alert)
-    #         await client.delete_alert(mac, [403499])
-    #         await client.add_alert(mac, {
-    #   "metric_name": "battery",
-    #   "operator": "lt",
-    #   "threshold": 15
-    # })
-    #         alert = await client.get_alert(mac)
+            #         await client.delete_alert(mac, [403499])
+            #         await client.add_alert(mac, {
+            #   "metric_name": "battery",
+            #   "operator": "lt",
+            #   "threshold": 15
+            # })
+            #         alert = await client.get_alert(mac)
             # print(await client.change_alert(mac, {
             #     "id": alert["alert_configs"][0]["id"],
             #     "metric_name": "temperature",
@@ -63,6 +61,7 @@ class TestClient(IsolatedAsyncioTestCase):
             print(await client.get_groups())
             print("---sn----")
             print(await client.get_device_info([mac], ["sn"]))
+
 
 if __name__ == "__main__":
     import unittest

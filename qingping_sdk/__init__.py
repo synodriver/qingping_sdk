@@ -6,4 +6,5 @@ from qingping_sdk.connection import (
     build_history_data,
     parse_history_data,
 )
+
 __version__ = "0.0.1"

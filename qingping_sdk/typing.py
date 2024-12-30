@@ -114,7 +114,7 @@ class GetGroupsResponse(TypedDict):
 
 class Profile(TypedDict):
     mac: str  # 设备 MAC
-    ble_mac: Optional[str] # ble.mac undocumented但是返回值有
+    ble_mac: Optional[str]  # ble.mac undocumented但是返回值有
     sn: Optional[str]  # 青萍 SN
     customization_sn: Optional[str]  # customization.sn 自定义 SN
 

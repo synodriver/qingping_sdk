@@ -4,9 +4,9 @@ Copyright (c) 2008-2024 synodriver <diguohuangjiajinweijun@gmail.com>
 """
 # https://qingping.feishu.cn/docs/doccnsQEUKIl4ySLumxSqYktH4d
 from dataclasses import dataclass
-from typing import Generator
 from enum import IntEnum
 from io import BytesIO
+from typing import Generator
 
 import crcmod
 

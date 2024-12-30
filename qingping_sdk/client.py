@@ -183,7 +183,7 @@ class Client:
         offset: int = None,
         limit: int = None,
         role: str = None,
-        timestamp: int = None
+        timestamp: int = None,
     ) -> DeviceResponse:
         """
         设备列表
